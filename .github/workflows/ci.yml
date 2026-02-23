@@ -10,21 +10,27 @@ concurrency:
 
 jobs:
   ci:
-    name: Typecheck, Lint & Format
+    name: CI
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Setup environment files
+        run: cp .env.example .env
 
       - name: Generate Prisma client
         run: pnpm db:generate
@@ -35,5 +41,5 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Format check
+      - name: Check formatting
         run: pnpm format:check

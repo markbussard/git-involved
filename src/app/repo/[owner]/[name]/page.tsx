@@ -183,7 +183,7 @@ export default async function RepoDetailPage({ params }: RepoPageProps) {
                   </div>
                 }
               >
-                <ReadmeRenderer content={repo.readme} />
+                <ReadmeRenderer content={repo.readme} repoFullName={repo.fullName} />
               </Suspense>
             </div>
           </section>

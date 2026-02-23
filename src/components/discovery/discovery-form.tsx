@@ -1,0 +1,370 @@
+"use client";
+
+import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, ArrowRight, Pencil, Search } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
+import { StepIndicator } from "~/components/discovery/step-indicator";
+import { ToggleChip } from "~/components/discovery/toggle-chip";
+import { SelectionCard } from "~/components/discovery/selection-card";
+import {
+  LANGUAGES,
+  EXPERIENCE_LEVELS,
+  INTERESTS,
+  REPO_SIZES,
+  type Language,
+  type ExperienceLevel,
+  type Interest,
+  type RepoSize,
+  type DiscoveryQuery,
+} from "~/lib/discovery/constants";
+
+const TOTAL_STEPS = 5;
+
+export function DiscoveryForm() {
+  const router = useRouter();
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const [selectedLanguages, setSelectedLanguages] = useState<Language[]>([]);
+  const [experienceLevel, setExperienceLevel] =
+    useState<ExperienceLevel | null>(null);
+  const [selectedInterests, setSelectedInterests] = useState<Interest[]>([]);
+  const [selectedRepoSizes, setSelectedRepoSizes] = useState<RepoSize[]>([]);
+
+  const toggleLanguage = useCallback((lang: Language) => {
+    setSelectedLanguages((prev) =>
+      prev.includes(lang)
+        ? prev.filter((l) => l !== lang)
+        : [...prev, lang]
+    );
+  }, []);
+
+  const toggleInterest = useCallback((interest: Interest) => {
+    setSelectedInterests((prev) =>
+      prev.includes(interest)
+        ? prev.filter((i) => i !== interest)
+        : [...prev, interest]
+    );
+  }, []);
+
+  const toggleRepoSize = useCallback((size: RepoSize) => {
+    setSelectedRepoSizes((prev) =>
+      prev.includes(size)
+        ? prev.filter((s) => s !== size)
+        : [...prev, size]
+    );
+  }, []);
+
+  const canContinue = (): boolean => {
+    switch (currentStep) {
+      case 0:
+        return selectedLanguages.length > 0;
+      case 1:
+        return experienceLevel !== null;
+      case 2:
+        return true; // interests are optional
+      case 3:
+        return selectedRepoSizes.length > 0;
+      case 4:
+        return true;
+      default:
+        return false;
+    }
+  };
+
+  const handleContinue = () => {
+    if (currentStep < TOTAL_STEPS - 1) {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!experienceLevel) return;
+
+    const query: DiscoveryQuery = {
+      languages: selectedLanguages,
+      experienceLevel,
+      interests: selectedInterests,
+      repoSizes: selectedRepoSizes,
+    };
+
+    const encoded = btoa(JSON.stringify(query));
+    router.push(`/discover?q=${encoded}`);
+  };
+
+  const goToStep = (step: number) => {
+    setCurrentStep(step);
+  };
+
+  const getLabelForValue = <T extends { value: string; label: string }>(
+    items: readonly T[],
+    value: string
+  ): string => {
+    const item = items.find((i) => i.value === value);
+    return item?.label ?? value;
+  };
+
+  return (
+    <div className="w-full max-w-2xl mx-auto">
+      <div className="mb-8">
+        <StepIndicator totalSteps={TOTAL_STEPS} currentStep={currentStep} />
+      </div>
+
+      <div className="min-h-[340px]">
+        {/* Step 1: Languages */}
+        {currentStep === 0 && (
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+            <h2 className="mb-2 text-2xl font-bold text-foreground">
+              What languages do you work with?
+            </h2>
+            <p className="mb-6 text-muted-foreground">
+              Select one or more programming languages you are comfortable with.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {LANGUAGES.map((lang) => (
+                <ToggleChip
+                  key={lang.value}
+                  label={lang.label}
+                  selected={selectedLanguages.includes(lang.value)}
+                  onToggle={() => toggleLanguage(lang.value)}
+                />
+              ))}
+            </div>
+            {selectedLanguages.length === 0 && (
+              <p className="mt-4 text-sm text-muted-foreground/70">
+                Select at least one language to continue.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Step 2: Experience Level */}
+        {currentStep === 1 && (
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+            <h2 className="mb-2 text-2xl font-bold text-foreground">
+              What is your experience level?
+            </h2>
+            <p className="mb-6 text-muted-foreground">
+              This helps us find issues that match your skill level.
+            </p>
+            <div className="flex flex-col gap-3">
+              {EXPERIENCE_LEVELS.map((level) => (
+                <SelectionCard
+                  key={level.value}
+                  title={level.label}
+                  description={level.description}
+                  selected={experienceLevel === level.value}
+                  onSelect={() => setExperienceLevel(level.value)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Interests */}
+        {currentStep === 2 && (
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+            <h2 className="mb-2 text-2xl font-bold text-foreground">
+              What areas interest you?
+            </h2>
+            <p className="mb-6 text-muted-foreground">
+              Optionally narrow down by topic. You can skip this step.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {INTERESTS.map((interest) => (
+                <ToggleChip
+                  key={interest.value}
+                  label={interest.label}
+                  selected={selectedInterests.includes(interest.value)}
+                  onToggle={() => toggleInterest(interest.value)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Repository Size */}
+        {currentStep === 3 && (
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+            <h2 className="mb-2 text-2xl font-bold text-foreground">
+              What size of project are you looking for?
+            </h2>
+            <p className="mb-6 text-muted-foreground">
+              Select one or more project sizes. At least one is required.
+            </p>
+            <div className="flex flex-col gap-3">
+              {REPO_SIZES.map((size) => (
+                <SelectionCard
+                  key={size.value}
+                  title={size.label}
+                  description={size.description}
+                  selected={selectedRepoSizes.includes(size.value)}
+                  onSelect={() => toggleRepoSize(size.value)}
+                />
+              ))}
+            </div>
+            {selectedRepoSizes.length === 0 && (
+              <p className="mt-4 text-sm text-muted-foreground/70">
+                Select at least one size to continue.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Step 5: Review */}
+        {currentStep === 4 && (
+          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+            <h2 className="mb-2 text-2xl font-bold text-foreground">
+              Review your preferences
+            </h2>
+            <p className="mb-6 text-muted-foreground">
+              Confirm your selections, then search for matching projects.
+            </p>
+
+            <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+              {/* Languages */}
+              <ReviewSection
+                title="Languages"
+                onEdit={() => goToStep(0)}
+              >
+                <div className="flex flex-wrap gap-2">
+                  {selectedLanguages.map((lang) => (
+                    <span
+                      key={lang}
+                      className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
+                    >
+                      {getLabelForValue(LANGUAGES, lang)}
+                    </span>
+                  ))}
+                </div>
+              </ReviewSection>
+
+              <Separator />
+
+              {/* Experience Level */}
+              <ReviewSection
+                title="Experience Level"
+                onEdit={() => goToStep(1)}
+              >
+                <span className="text-sm text-foreground">
+                  {experienceLevel
+                    ? getLabelForValue(EXPERIENCE_LEVELS, experienceLevel)
+                    : "Not selected"}
+                </span>
+              </ReviewSection>
+
+              <Separator />
+
+              {/* Interests */}
+              <ReviewSection
+                title="Interests"
+                onEdit={() => goToStep(2)}
+              >
+                {selectedInterests.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {selectedInterests.map((interest) => (
+                      <span
+                        key={interest}
+                        className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-sm font-medium text-secondary-foreground"
+                      >
+                        {getLabelForValue(INTERESTS, interest)}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    No preferences (all topics)
+                  </span>
+                )}
+              </ReviewSection>
+
+              <Separator />
+
+              {/* Repository Sizes */}
+              <ReviewSection
+                title="Repository Size"
+                onEdit={() => goToStep(3)}
+              >
+                <div className="flex flex-wrap gap-2">
+                  {selectedRepoSizes.map((size) => (
+                    <span
+                      key={size}
+                      className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-sm font-medium text-secondary-foreground"
+                    >
+                      {getLabelForValue(REPO_SIZES, size)}
+                    </span>
+                  ))}
+                </div>
+              </ReviewSection>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="mt-8 flex items-center justify-between">
+        <Button
+          variant="ghost"
+          onClick={handleBack}
+          disabled={currentStep === 0}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </Button>
+
+        {currentStep < TOTAL_STEPS - 1 ? (
+          <Button
+            onClick={handleContinue}
+            disabled={!canContinue()}
+            className="gap-2"
+          >
+            Continue
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Button onClick={handleSubmit} className="gap-2">
+            <Search className="h-4 w-4" />
+            Find Projects
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ReviewSection({
+  title,
+  onEdit,
+  children,
+}: {
+  title: string;
+  onEdit: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+          {title}
+        </h3>
+        <button
+          type="button"
+          onClick={onEdit}
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <Pencil className="h-3 w-3" />
+          Edit
+        </button>
+      </div>
+      {children}
+    </div>
+  );
+}

@@ -1,11 +1,13 @@
 "use client";
 
 import { Suspense, useEffect, useMemo } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+
 import { AlertCircle, ArrowLeft, RefreshCw, SearchX } from "lucide-react";
+
+import { RepoCard } from "~/components/discovery/repo-card";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import { RepoCard } from "~/components/discovery/repo-card";
 import { useDiscovery } from "~/lib/api/hooks";
 import type { DiscoveryQuery } from "~/lib/discovery/constants";
 
@@ -33,7 +35,7 @@ function LoadingSkeleton() {
   return (
     <div className="space-y-6">
       {Array.from({ length: 3 }, (_, i) => (
-        <div key={i} className="rounded-xl border border-border bg-card p-6">
+        <div key={i} className="border-border bg-card rounded-xl border p-6">
           <div className="space-y-3">
             <Skeleton className="h-6 w-2/3" />
             <Skeleton className="h-4 w-full" />
@@ -70,13 +72,13 @@ function DiscoverContent() {
 
   if (!query) {
     return (
-      <div className="flex flex-col items-center justify-center bg-background px-6">
+      <div className="bg-background flex flex-col items-center justify-center px-6">
         <div className="text-center">
-          <AlertCircle className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-          <h1 className="mb-2 text-2xl font-bold text-foreground">
+          <AlertCircle className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+          <h1 className="text-foreground mb-2 text-2xl font-bold">
             Invalid Search
           </h1>
-          <p className="mb-6 text-muted-foreground">
+          <p className="text-muted-foreground mb-6">
             The search query is missing or invalid. Please start a new search.
           </p>
           <Button onClick={() => router.push("/")} className="gap-2">
@@ -89,14 +91,14 @@ function DiscoverContent() {
   }
 
   return (
-    <div className="flex flex-col items-center bg-background">
+    <div className="bg-background flex flex-col items-center">
       <main className="w-full max-w-3xl px-6 py-12">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className="text-foreground text-3xl font-bold">
               Recommended Projects
             </h1>
-            <p className="mt-1 text-muted-foreground">
+            <p className="text-muted-foreground mt-1">
               Projects and issues matched to your preferences.
             </p>
           </div>
@@ -113,12 +115,12 @@ function DiscoverContent() {
         {isPending && <LoadingSkeleton />}
 
         {isError && (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16 text-center">
-            <AlertCircle className="mb-4 h-12 w-12 text-destructive" />
-            <h2 className="mb-2 text-xl font-semibold text-foreground">
+          <div className="border-border bg-card flex flex-col items-center justify-center rounded-xl border py-16 text-center">
+            <AlertCircle className="text-destructive mb-4 h-12 w-12" />
+            <h2 className="text-foreground mb-2 text-xl font-semibold">
               Something went wrong
             </h2>
-            <p className="mb-6 max-w-md text-muted-foreground">
+            <p className="text-muted-foreground mb-6 max-w-md">
               {error instanceof Error
                 ? error.message
                 : "An unexpected error occurred while searching for projects."}
@@ -147,12 +149,12 @@ function DiscoverContent() {
         )}
 
         {!isPending && !isError && data && data.length === 0 && (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16 text-center">
-            <SearchX className="mb-4 h-12 w-12 text-muted-foreground" />
-            <h2 className="mb-2 text-xl font-semibold text-foreground">
+          <div className="border-border bg-card flex flex-col items-center justify-center rounded-xl border py-16 text-center">
+            <SearchX className="text-muted-foreground mb-4 h-12 w-12" />
+            <h2 className="text-foreground mb-2 text-xl font-semibold">
               No projects found
             </h2>
-            <p className="mb-6 max-w-md text-muted-foreground">
+            <p className="text-muted-foreground mb-6 max-w-md">
               We could not find any projects matching your criteria. Try
               adjusting your language, experience level, or project size
               preferences.

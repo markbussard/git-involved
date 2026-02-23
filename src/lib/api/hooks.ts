@@ -1,5 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { DiscoveryQuery, DiscoveryResult } from "~/lib/discovery/constants";
+
+import type {
+  DiscoveryQuery,
+  DiscoveryResult,
+} from "~/lib/discovery/constants";
 import type {
   DiscoveryResult as ApiDiscoveryResult,
   RepoMatch,
@@ -41,7 +45,9 @@ function mapDifficulty(
   }
 }
 
-async function postDiscovery(query: DiscoveryQuery): Promise<DiscoveryResult[]> {
+async function postDiscovery(
+  query: DiscoveryQuery,
+): Promise<DiscoveryResult[]> {
   const response = await fetch("/api/discover", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

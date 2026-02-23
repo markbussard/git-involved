@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+
 import { z } from "zod";
+
 import { RepoSize } from "~/generated/prisma/client";
 import { discoverRepositories } from "~/lib/query/discover";
 import type { Interest } from "~/lib/query/types";
@@ -24,9 +26,7 @@ const discoverRequestSchema = z.object({
     .array(z.enum(VALID_INTERESTS as [Interest, ...Interest[]]))
     .min(1, "At least one interest is required"),
   repoSizes: z
-    .array(
-      z.enum(VALID_REPO_SIZES as [RepoSize, ...RepoSize[]]),
-    )
+    .array(z.enum(VALID_REPO_SIZES as [RepoSize, ...RepoSize[]]))
     .min(1, "At least one repo size is required"),
   trendingTopics: z.array(z.string()).optional(),
 });

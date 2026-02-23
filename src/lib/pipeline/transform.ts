@@ -1,11 +1,7 @@
-import {
-  RepoSize,
-  IssueState,
-  Difficulty,
-} from "~/generated/prisma/client";
-import type { GitHubRepository, GitHubIssue } from "~/lib/github/client";
-import type { RepositoryCreateInput } from "~/generated/prisma/models/Repository";
+import { Difficulty, IssueState, RepoSize } from "~/generated/prisma/client";
 import type { IssueUncheckedCreateInput } from "~/generated/prisma/models/Issue";
+import type { RepositoryCreateInput } from "~/generated/prisma/models/Repository";
+import type { GitHubIssue, GitHubRepository } from "~/lib/github/client";
 
 // ---------------------------------------------------------------------------
 // Repo Size
@@ -48,12 +44,7 @@ const INTERMEDIATE_LABELS = new Set([
   "intermediate",
 ]);
 
-const ADVANCED_LABELS = new Set([
-  "advanced",
-  "hard",
-  "complex",
-  "expert",
-]);
+const ADVANCED_LABELS = new Set(["advanced", "hard", "complex", "expert"]);
 
 /**
  * Infer the `Difficulty` for an issue based on its label names.
@@ -113,8 +104,11 @@ export function transformRepository(
       openIssuesCount: ghRepo.open_issues_count,
       stargazersCount: ghRepo.stargazers_count,
       hasReadme: readme !== null && readme.length > 0,
-      hasLicense: ghRepo.license?.spdx_id !== null && ghRepo.license?.spdx_id !== undefined,
-      hasDescription: ghRepo.description !== null && ghRepo.description.length > 0,
+      hasLicense:
+        ghRepo.license?.spdx_id !== null &&
+        ghRepo.license?.spdx_id !== undefined,
+      hasDescription:
+        ghRepo.description !== null && ghRepo.description.length > 0,
     }),
   };
 }

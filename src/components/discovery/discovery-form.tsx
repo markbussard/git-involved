@@ -2,22 +2,24 @@
 
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
+
 import { ArrowLeft, ArrowRight, Pencil, Search } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { Separator } from "~/components/ui/separator";
+
+import { SelectionCard } from "~/components/discovery/selection-card";
 import { StepIndicator } from "~/components/discovery/step-indicator";
 import { ToggleChip } from "~/components/discovery/toggle-chip";
-import { SelectionCard } from "~/components/discovery/selection-card";
+import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
 import {
-  LANGUAGES,
   EXPERIENCE_LEVELS,
   INTERESTS,
+  LANGUAGES,
   REPO_SIZES,
-  type Language,
+  type DiscoveryQuery,
   type ExperienceLevel,
   type Interest,
+  type Language,
   type RepoSize,
-  type DiscoveryQuery,
 } from "~/lib/discovery/constants";
 
 const TOTAL_STEPS = 5;
@@ -34,9 +36,7 @@ export function DiscoveryForm() {
 
   const toggleLanguage = useCallback((lang: Language) => {
     setSelectedLanguages((prev) =>
-      prev.includes(lang)
-        ? prev.filter((l) => l !== lang)
-        : [...prev, lang]
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang],
     );
   }, []);
 
@@ -44,15 +44,13 @@ export function DiscoveryForm() {
     setSelectedInterests((prev) =>
       prev.includes(interest)
         ? prev.filter((i) => i !== interest)
-        : [...prev, interest]
+        : [...prev, interest],
     );
   }, []);
 
   const toggleRepoSize = useCallback((size: RepoSize) => {
     setSelectedRepoSizes((prev) =>
-      prev.includes(size)
-        ? prev.filter((s) => s !== size)
-        : [...prev, size]
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size],
     );
   }, []);
 
@@ -105,14 +103,14 @@ export function DiscoveryForm() {
 
   const getLabelForValue = <T extends { value: string; label: string }>(
     items: readonly T[],
-    value: string
+    value: string,
   ): string => {
     const item = items.find((i) => i.value === value);
     return item?.label ?? value;
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="mx-auto w-full max-w-2xl">
       <div className="mb-8">
         <StepIndicator totalSteps={TOTAL_STEPS} currentStep={currentStep} />
       </div>
@@ -121,10 +119,10 @@ export function DiscoveryForm() {
         {/* Step 1: Languages */}
         {currentStep === 0 && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <h2 className="mb-2 text-2xl font-bold text-foreground">
+            <h2 className="text-foreground mb-2 text-2xl font-bold">
               What languages do you work with?
             </h2>
-            <p className="mb-6 text-muted-foreground">
+            <p className="text-muted-foreground mb-6">
               Select one or more programming languages you are comfortable with.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -138,7 +136,7 @@ export function DiscoveryForm() {
               ))}
             </div>
             {selectedLanguages.length === 0 && (
-              <p className="mt-4 text-sm text-muted-foreground/70">
+              <p className="text-muted-foreground/70 mt-4 text-sm">
                 Select at least one language to continue.
               </p>
             )}
@@ -148,10 +146,10 @@ export function DiscoveryForm() {
         {/* Step 2: Experience Level */}
         {currentStep === 1 && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <h2 className="mb-2 text-2xl font-bold text-foreground">
+            <h2 className="text-foreground mb-2 text-2xl font-bold">
               What is your experience level?
             </h2>
-            <p className="mb-6 text-muted-foreground">
+            <p className="text-muted-foreground mb-6">
               This helps us find issues that match your skill level.
             </p>
             <div className="flex flex-col gap-3">
@@ -171,10 +169,10 @@ export function DiscoveryForm() {
         {/* Step 3: Interests */}
         {currentStep === 2 && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <h2 className="mb-2 text-2xl font-bold text-foreground">
+            <h2 className="text-foreground mb-2 text-2xl font-bold">
               What areas interest you?
             </h2>
-            <p className="mb-6 text-muted-foreground">
+            <p className="text-muted-foreground mb-6">
               Optionally narrow down by topic. You can skip this step.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -193,10 +191,10 @@ export function DiscoveryForm() {
         {/* Step 4: Repository Size */}
         {currentStep === 3 && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <h2 className="mb-2 text-2xl font-bold text-foreground">
+            <h2 className="text-foreground mb-2 text-2xl font-bold">
               What size of project are you looking for?
             </h2>
-            <p className="mb-6 text-muted-foreground">
+            <p className="text-muted-foreground mb-6">
               Select one or more project sizes. At least one is required.
             </p>
             <div className="flex flex-col gap-3">
@@ -211,7 +209,7 @@ export function DiscoveryForm() {
               ))}
             </div>
             {selectedRepoSizes.length === 0 && (
-              <p className="mt-4 text-sm text-muted-foreground/70">
+              <p className="text-muted-foreground/70 mt-4 text-sm">
                 Select at least one size to continue.
               </p>
             )}
@@ -221,24 +219,21 @@ export function DiscoveryForm() {
         {/* Step 5: Review */}
         {currentStep === 4 && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <h2 className="mb-2 text-2xl font-bold text-foreground">
+            <h2 className="text-foreground mb-2 text-2xl font-bold">
               Review your preferences
             </h2>
-            <p className="mb-6 text-muted-foreground">
+            <p className="text-muted-foreground mb-6">
               Confirm your selections, then search for matching projects.
             </p>
 
-            <div className="rounded-xl border border-border bg-card p-6 space-y-5">
+            <div className="border-border bg-card space-y-5 rounded-xl border p-6">
               {/* Languages */}
-              <ReviewSection
-                title="Languages"
-                onEdit={() => goToStep(0)}
-              >
+              <ReviewSection title="Languages" onEdit={() => goToStep(0)}>
                 <div className="flex flex-wrap gap-2">
                   {selectedLanguages.map((lang) => (
                     <span
                       key={lang}
-                      className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary"
+                      className="bg-primary/10 text-primary inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
                     >
                       {getLabelForValue(LANGUAGES, lang)}
                     </span>
@@ -253,7 +248,7 @@ export function DiscoveryForm() {
                 title="Experience Level"
                 onEdit={() => goToStep(1)}
               >
-                <span className="text-sm text-foreground">
+                <span className="text-foreground text-sm">
                   {experienceLevel
                     ? getLabelForValue(EXPERIENCE_LEVELS, experienceLevel)
                     : "Not selected"}
@@ -263,23 +258,20 @@ export function DiscoveryForm() {
               <Separator />
 
               {/* Interests */}
-              <ReviewSection
-                title="Interests"
-                onEdit={() => goToStep(2)}
-              >
+              <ReviewSection title="Interests" onEdit={() => goToStep(2)}>
                 {selectedInterests.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {selectedInterests.map((interest) => (
                       <span
                         key={interest}
-                        className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-sm font-medium text-secondary-foreground"
+                        className="bg-secondary text-secondary-foreground inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
                       >
                         {getLabelForValue(INTERESTS, interest)}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-muted-foreground text-sm">
                     No preferences (all topics)
                   </span>
                 )}
@@ -288,15 +280,12 @@ export function DiscoveryForm() {
               <Separator />
 
               {/* Repository Sizes */}
-              <ReviewSection
-                title="Repository Size"
-                onEdit={() => goToStep(3)}
-              >
+              <ReviewSection title="Repository Size" onEdit={() => goToStep(3)}>
                 <div className="flex flex-wrap gap-2">
                   {selectedRepoSizes.map((size) => (
                     <span
                       key={size}
-                      className="inline-flex items-center rounded-full bg-secondary px-3 py-1 text-sm font-medium text-secondary-foreground"
+                      className="bg-secondary text-secondary-foreground inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
                     >
                       {getLabelForValue(REPO_SIZES, size)}
                     </span>
@@ -352,13 +341,13 @@ function ReviewSection({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+        <h3 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
           {title}
         </h3>
         <button
           type="button"
           onClick={onEdit}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-xs font-medium transition-colors"
         >
           <Pencil className="h-3 w-3" />
           Edit

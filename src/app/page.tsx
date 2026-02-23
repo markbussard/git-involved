@@ -1,4 +1,5 @@
 import { GitPullRequest, Search, Users } from "lucide-react";
+
 import { DiscoveryForm } from "~/components/discovery/discovery-form";
 
 export default function Home() {
@@ -7,12 +8,12 @@ export default function Home() {
       {/* Hero + Discovery Form */}
       <section className="w-full max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
         <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          <h1 className="text-foreground text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
             Find Your Next
             <br />
             <span className="text-primary">Open Source Contribution</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-lg text-base text-muted-foreground sm:mt-6 sm:text-lg">
+          <p className="text-muted-foreground mx-auto mt-4 max-w-lg text-base sm:mt-6 sm:text-lg">
             Tell us about your skills and interests, and we will match you with
             projects and issues that are perfect for you.
           </p>
@@ -22,7 +23,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="w-full border-t border-border bg-muted/30 px-4 py-16 sm:px-6 sm:py-20">
+      <section className="border-border bg-muted/30 w-full border-t px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <FeatureCard
             icon={<Search className="h-6 w-6" />}
@@ -55,12 +56,12 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="flex flex-col items-start gap-3 rounded-xl border border-border bg-card p-6 shadow-sm">
-      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+    <div className="border-border bg-card flex flex-col items-start gap-3 rounded-xl border p-6 shadow-sm">
+      <div className="bg-primary/10 text-primary flex h-10 w-10 items-center justify-center rounded-lg">
         {icon}
       </div>
-      <h3 className="text-lg font-semibold text-card-foreground">{title}</h3>
-      <p className="text-sm leading-relaxed text-muted-foreground">
+      <h3 className="text-card-foreground text-lg font-semibold">{title}</h3>
+      <p className="text-muted-foreground text-sm leading-relaxed">
         {description}
       </p>
     </div>

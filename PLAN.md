@@ -36,32 +36,36 @@
 **Tasks:**
 
 1. Initialize Next.js project with TypeScript
+
    ```bash
    npx create-next-app@latest git-involved --typescript --tailwind --eslint --app --src-dir
    ```
 
 2. Install core dependencies
+
    ```bash
    # Core
    npm install @prisma/client @tanstack/react-query zod
-   
+
    # UI
    npm install tailwindcss-animate class-variance-authority clsx tailwind-merge lucide-react
    npx shadcn@latest init
-   
+
    # GitHub & AI
    npm install @octokit/rest openai @pinecone-database/pinecone
-   
+
    # Dev dependencies
    npm install -D prisma tsx
    ```
 
 3. Configure ShadCN components
+
    ```bash
    npx shadcn@latest add button card badge input label select checkbox
    ```
 
 4. Set up project structure
+
    ```
    /src
      /app
@@ -139,11 +143,11 @@ model Repository {
   createdAt         DateTime
   updatedAt         DateTime
   pushedAt          DateTime
-  
+
   size              RepoSize
   readme            String?
   healthScore       Float?
-  
+
   indexedAt         DateTime @default(now())
   embeddingId       String?
   embeddingSyncedAt DateTime?
@@ -167,10 +171,10 @@ model Issue {
   commentCount     Int
   createdAt        DateTime
   updatedAt        DateTime
-  
+
   difficulty       Difficulty?
   isGoodFirstIssue Boolean     @default(false)
-  
+
   indexedAt         DateTime   @default(now())
   embeddingId       String?
   embeddingSyncedAt DateTime?
@@ -194,7 +198,7 @@ model SyncLog {
   reposProcessed Int    @default(0)
   issuesProcessed Int   @default(0)
   errors      String[]
-  
+
   @@index([type, status])
   @@index([startedAt])
 }
@@ -312,6 +316,7 @@ enum SyncStatus {
    - Truncate input to 8000 chars max
 
 2. `buildRepoEmbeddingText(repo)` - Construct text for repo embedding
+
    ```
    {fullName}
    {description}
@@ -365,8 +370,18 @@ enum SyncStatus {
 
 ```typescript
 const LANGUAGES_TO_INDEX = [
-  'typescript', 'javascript', 'python', 'go', 'rust',
-  'java', 'csharp', 'cpp', 'ruby', 'php', 'swift', 'kotlin'
+  "typescript",
+  "javascript",
+  "python",
+  "go",
+  "rust",
+  "java",
+  "csharp",
+  "cpp",
+  "ruby",
+  "php",
+  "swift",
+  "kotlin",
 ];
 
 const MIN_STARS = 100;
@@ -406,21 +421,21 @@ const MAX_ISSUES_PER_REPO = 100;
 ```typescript
 export interface DiscoveryQuery {
   languages: string[];
-  experienceLevel: 'beginner' | 'intermediate' | 'expert';
+  experienceLevel: "beginner" | "intermediate" | "expert";
   interests: Interest[];
   repoSizes: RepoSize[];
   trendingTopics?: string[];
 }
 
 export type Interest =
-  | 'web-development'
-  | 'mobile-development'
-  | 'ai-ml'
-  | 'game-development'
-  | 'devops'
-  | 'security'
-  | 'data-science'
-  | 'embedded-systems';
+  | "web-development"
+  | "mobile-development"
+  | "ai-ml"
+  | "game-development"
+  | "devops"
+  | "security"
+  | "data-science"
+  | "embedded-systems";
 
 export interface RepoMatch {
   id: string;
@@ -469,16 +484,21 @@ export interface DiscoveryResult {
 
 ```typescript
 const INTEREST_DESCRIPTIONS = {
-  'web-development': 'web development, frontend, backend, full-stack, React, Vue, Node.js, APIs',
-  'mobile-development': 'mobile development, iOS, Android, React Native, Flutter',
-  'ai-ml': 'artificial intelligence, machine learning, deep learning, NLP, computer vision',
+  "web-development":
+    "web development, frontend, backend, full-stack, React, Vue, Node.js, APIs",
+  "mobile-development":
+    "mobile development, iOS, Android, React Native, Flutter",
+  "ai-ml":
+    "artificial intelligence, machine learning, deep learning, NLP, computer vision",
   // ... etc
 };
 
 const EXPERIENCE_DESCRIPTIONS = {
-  'beginner': 'beginner-friendly, well-documented, simple codebase, good first issues',
-  'intermediate': 'moderate complexity, some experience required, established patterns',
-  'expert': 'complex architecture, advanced patterns, deep domain knowledge'
+  beginner:
+    "beginner-friendly, well-documented, simple codebase, good first issues",
+  intermediate:
+    "moderate complexity, some experience required, established patterns",
+  expert: "complex architecture, advanced patterns, deep domain knowledge",
 };
 ```
 
@@ -541,6 +561,7 @@ const EXPERIENCE_DESCRIPTIONS = {
 **Method:** POST
 
 **Request body:**
+
 ```typescript
 {
   languages: string[];           // Required, min 1
@@ -552,6 +573,7 @@ const EXPERIENCE_DESCRIPTIONS = {
 ```
 
 **Response:**
+
 ```typescript
 {
   repos: RepoMatch[];
@@ -561,6 +583,7 @@ const EXPERIENCE_DESCRIPTIONS = {
 ```
 
 **Implementation:**
+
 1. Validate request with Zod
 2. Call `discoverRepositories(query)`
 3. Return results
@@ -572,6 +595,7 @@ const EXPERIENCE_DESCRIPTIONS = {
 **Method:** GET
 
 **Response:**
+
 ```typescript
 {
   id: string;
@@ -595,6 +619,7 @@ const EXPERIENCE_DESCRIPTIONS = {
 ```
 
 **Implementation:**
+
 1. Fetch repo from Postgres by ID
 2. Include related issues
 3. Return 404 if not found
@@ -606,11 +631,13 @@ const EXPERIENCE_DESCRIPTIONS = {
 **Method:** GET
 
 **Response:**
+
 ```typescript
 string[]  // Array of trending topic names
 ```
 
 **Implementation:**
+
 1. Fetch from GitHub trending or use cached topics
 2. Return array of topic strings
 3. Cache for 15 minutes
@@ -626,6 +653,7 @@ string[]  // Array of trending topic names
 **File:** `src/lib/discovery/constants.ts`
 
 Define all options for:
+
 - Languages (value, label)
 - Experience levels (value, label, description)
 - Interests (value, label)
@@ -664,6 +692,7 @@ Define all options for:
    - Navigate to `/discover?q={encoded}`
 
 **Sub-components:**
+
 - `StepContainer` - Title, description, children wrapper
 - `ToggleChip` - Multi-select pill button
 - `SelectionCard` - Single/multi-select card with description
@@ -674,6 +703,7 @@ Define all options for:
 **File:** `src/app/page.tsx`
 
 **Layout:**
+
 - Hero section with title and description
 - Discovery form component
 - Optional: Featured repos or stats
@@ -697,6 +727,7 @@ Define all options for:
 **File:** `src/components/discovery/repo-card.tsx`
 
 **Display:**
+
 - Repo name (link to detail page)
 - Description
 - Star count
@@ -754,6 +785,7 @@ Define all options for:
 **File:** `src/components/repo/readme-renderer.tsx`
 
 **Options:**
+
 - Use `react-markdown` with GFM support
 - Or server-side render with `marked`
 - Style with Tailwind typography plugin
@@ -769,6 +801,7 @@ Define all options for:
 **File:** `src/app/layout.tsx`
 
 **Requirements:**
+
 - HTML metadata
 - TanStack Query provider
 - Global styles
@@ -780,6 +813,7 @@ Define all options for:
 **File:** `src/components/layout/header.tsx`
 
 **Elements:**
+
 - Logo/brand
 - Navigation links (Home, optional: About, GitHub)
 - GitHub link to project repo
@@ -789,6 +823,7 @@ Define all options for:
 **File:** `src/components/layout/footer.tsx`
 
 **Elements:**
+
 - Copyright
 - Links (GitHub, Twitter, etc.)
 - Built with credits
@@ -796,6 +831,7 @@ Define all options for:
 ### 7.4 Loading States
 
 **Requirements:**
+
 - Skeleton components for cards
 - Loading spinner component
 - Page-level loading states
@@ -803,6 +839,7 @@ Define all options for:
 ### 7.5 Error Handling
 
 **Requirements:**
+
 - Error boundary component
 - User-friendly error messages
 - Retry functionality
@@ -810,6 +847,7 @@ Define all options for:
 ### 7.6 Responsive Design
 
 **Requirements:**
+
 - Mobile-first approach
 - Breakpoints: sm (640px), md (768px), lg (1024px)
 - Touch-friendly interactions
@@ -832,12 +870,14 @@ Define all options for:
 ### 8.2 Database Hosting
 
 **Options:**
+
 - Vercel Postgres
 - Supabase
 - Neon
 - Railway
 
 **Tasks:**
+
 1. Create production database
 2. Run migrations
 3. Configure connection pooling
@@ -847,21 +887,24 @@ Define all options for:
 **Options:**
 
 **Option A: Vercel Cron Jobs**
+
 - Create API route for ingestion trigger
 - Configure `vercel.json` cron schedule
 - Limit: 10 second timeout on hobby plan
 
 **Option B: External Worker**
+
 - Deploy separate worker (Railway, Render, etc.)
 - Run ingestion script on schedule
 - Better for long-running jobs
 
 **Option C: GitHub Actions**
+
 ```yaml
 name: Sync Repositories
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
+    - cron: "0 */6 * * *" # Every 6 hours
   workflow_dispatch:
 
 jobs:
@@ -878,6 +921,7 @@ jobs:
 ```
 
 **Recommended schedule:**
+
 - Full sync: Weekly (Sunday night)
 - Incremental sync (issues only): Every 6 hours
 
@@ -895,6 +939,7 @@ jobs:
 **File:** `src/scripts/cleanup-stale.ts`
 
 **Functionality:**
+
 1. Remove repos not updated in 30+ days
 2. Remove closed issues
 3. Clean up orphaned embeddings from Pinecone
@@ -905,12 +950,14 @@ jobs:
 ## Implementation Order & Dependencies
 
 ### Sprint 1: Foundation (Week 1)
+
 1. Project setup (1.1)
 2. Database schema (1.2)
 3. Vector DB setup (1.3)
 4. GitHub client (2.1)
 
 ### Sprint 2: Ingestion (Week 2)
+
 1. Transform layer (2.2)
 2. Embeddings service (2.3)
 3. Vector DB client (2.4)
@@ -919,6 +966,7 @@ jobs:
 6. Run initial data sync
 
 ### Sprint 3: Query Layer (Week 3)
+
 1. Query types (3.1)
 2. Query embeddings (3.2)
 3. Discovery service (3.3)
@@ -926,6 +974,7 @@ jobs:
 5. API routes (4.1-4.3)
 
 ### Sprint 4: Frontend Core (Week 4)
+
 1. Constants & hooks (5.1-5.2)
 2. Discovery form (5.3)
 3. Landing page (5.4)
@@ -933,12 +982,14 @@ jobs:
 5. Repo card (5.6)
 
 ### Sprint 5: Frontend Detail & Polish (Week 5)
+
 1. Repo detail page (6.1-6.3)
 2. Layout components (7.1-7.3)
 3. Loading & error states (7.4-7.5)
 4. Responsive design (7.6)
 
 ### Sprint 6: Deployment (Week 6)
+
 1. Vercel deployment (8.1)
 2. Database hosting (8.2)
 3. Scheduled ingestion (8.3)
@@ -954,6 +1005,7 @@ jobs:
 **Tools:** Vitest
 
 **Coverage:**
+
 - Transform functions
 - Difficulty inference
 - Query building
@@ -964,6 +1016,7 @@ jobs:
 **Tools:** Vitest + Prisma test utils
 
 **Coverage:**
+
 - Database operations
 - API routes
 - Discovery flow
@@ -973,6 +1026,7 @@ jobs:
 **Tools:** Playwright
 
 **Coverage:**
+
 - Discovery form flow
 - Results page rendering
 - Repo detail page

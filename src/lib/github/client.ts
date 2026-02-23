@@ -91,7 +91,9 @@ async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
 
       // Retry on rate-limit (403 / 429) and server errors (5xx)
       const isRetryable =
-        status === 403 || status === 429 || (status !== undefined && status >= 500);
+        status === 403 ||
+        status === 429 ||
+        (status !== undefined && status >= 500);
 
       if (!isRetryable || attempt === MAX_RETRIES - 1) {
         throw error;
@@ -102,14 +104,12 @@ async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
       if (
         error instanceof Object &&
         "response" in error &&
-        (error as { response: { headers: Record<string, string> } }).response?.headers?.[
-          "retry-after"
-        ]
+        (error as { response: { headers: Record<string, string> } }).response
+          ?.headers?.["retry-after"]
       ) {
         const retryAfter = Number(
-          (error as { response: { headers: Record<string, string> } }).response.headers[
-            "retry-after"
-          ],
+          (error as { response: { headers: Record<string, string> } }).response
+            .headers["retry-after"],
         );
         if (!Number.isNaN(retryAfter)) {
           delayMs = retryAfter * 1000;
@@ -227,9 +227,9 @@ export async function fetchRepoIssues(
   );
 
   // The Issues API also returns pull requests -- filter them out.
-  return (response.data as unknown as (GitHubIssue & { pull_request?: unknown })[]).filter(
-    (issue) => !("pull_request" in issue && issue.pull_request),
-  );
+  return (
+    response.data as unknown as (GitHubIssue & { pull_request?: unknown })[]
+  ).filter((issue) => !("pull_request" in issue && issue.pull_request));
 }
 
 /**

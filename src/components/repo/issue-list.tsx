@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
+
 import { MessageSquare } from "lucide-react";
+
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Toggle } from "~/components/ui/toggle";
+import type { Difficulty } from "~/generated/prisma/client";
 import { cn } from "~/lib/utils";
 import { formatRelativeDate } from "~/lib/utils/date";
-import type { Difficulty } from "~/generated/prisma/client";
 
 interface IssueItem {
   id: string;
@@ -45,8 +47,7 @@ const DIFFICULTY_STYLES: Record<string, string> = {
     "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
   INTERMEDIATE:
     "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400",
-  ADVANCED:
-    "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400",
+  ADVANCED: "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400",
 };
 
 const DIFFICULTY_DOT_COLORS: Record<string, string> = {
@@ -66,7 +67,7 @@ export function IssueList({ issues }: IssueListProps) {
     issues,
     difficultyFilter,
     sortOption,
-    goodFirstIssueOnly
+    goodFirstIssueOnly,
   );
 
   return (
@@ -87,7 +88,7 @@ export function IssueList({ issues }: IssueListProps) {
                   data-icon="inline-start"
                   className={cn(
                     "inline-block size-2 rounded-full",
-                    DIFFICULTY_DOT_COLORS[filter.value]
+                    DIFFICULTY_DOT_COLORS[filter.value],
                   )}
                 />
               ) : null}
@@ -108,7 +109,7 @@ export function IssueList({ issues }: IssueListProps) {
             Good first issue
           </Toggle>
 
-          <div className="flex items-center gap-1 rounded-lg border border-border">
+          <div className="border-border flex items-center gap-1 rounded-lg border">
             {SORT_OPTIONS.map((option) => (
               <button
                 key={option.value}
@@ -117,7 +118,7 @@ export function IssueList({ issues }: IssueListProps) {
                   "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
                   sortOption === option.value
                     ? "bg-muted text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {option.label}
@@ -128,21 +129,22 @@ export function IssueList({ issues }: IssueListProps) {
       </div>
 
       {filteredAndSorted.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-12 text-center">
-          <p className="text-sm font-medium text-foreground">
+        <div className="border-border flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
+          <p className="text-foreground text-sm font-medium">
             No issues match your filters
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Try adjusting the difficulty or removing the good first issue filter.
+          <p className="text-muted-foreground mt-1 text-sm">
+            Try adjusting the difficulty or removing the good first issue
+            filter.
           </p>
         </div>
       ) : (
         <div className="space-y-2">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-muted-foreground text-xs">
             {filteredAndSorted.length}{" "}
             {filteredAndSorted.length === 1 ? "issue" : "issues"}
           </p>
-          <ul className="divide-y divide-border rounded-lg border border-border">
+          <ul className="divide-border border-border divide-y rounded-lg border">
             {filteredAndSorted.map((issue) => (
               <IssueRow key={issue.id} issue={issue} />
             ))}
@@ -156,19 +158,19 @@ export function IssueList({ issues }: IssueListProps) {
 function IssueRow({ issue }: { issue: IssueItem }) {
   return (
     <li
-      className="flex flex-col gap-2 p-4 transition-colors hover:bg-muted/50 sm:flex-row sm:items-start sm:justify-between"
+      className="hover:bg-muted/50 flex flex-col gap-2 p-4 transition-colors sm:flex-row sm:items-start sm:justify-between"
       style={{ contentVisibility: "auto", containIntrinsicSize: "auto 72px" }}
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-start gap-2">
-          <span className="shrink-0 pt-0.5 text-xs font-medium text-muted-foreground">
+          <span className="text-muted-foreground shrink-0 pt-0.5 text-xs font-medium">
             #{issue.number}
           </span>
           <a
             href={issue.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+            className="text-foreground hover:text-primary text-sm font-medium transition-colors"
           >
             {issue.title}
           </a>
@@ -179,7 +181,7 @@ function IssueRow({ issue }: { issue: IssueItem }) {
             {issue.labels.map((label) => (
               <span
                 key={label}
-                className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+                className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 py-0.5 text-xs"
               >
                 {label}
               </span>
@@ -193,7 +195,7 @@ function IssueRow({ issue }: { issue: IssueItem }) {
               variant="outline"
               className={cn(
                 "text-xs capitalize",
-                DIFFICULTY_STYLES[issue.difficulty]
+                DIFFICULTY_STYLES[issue.difficulty],
               )}
             >
               {issue.difficulty.toLowerCase()}
@@ -206,12 +208,12 @@ function IssueRow({ issue }: { issue: IssueItem }) {
             </Badge>
           ) : null}
 
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+          <span className="text-muted-foreground inline-flex items-center gap-1 text-xs">
             <MessageSquare className="size-3" />
             {issue.commentCount}
           </span>
 
-          <span className="text-xs text-muted-foreground">
+          <span className="text-muted-foreground text-xs">
             {formatRelativeDate(issue.createdAt)}
           </span>
         </div>
@@ -224,7 +226,7 @@ function getFilteredAndSortedIssues(
   issues: IssueItem[],
   difficultyFilter: DifficultyFilter,
   sortOption: SortOption,
-  goodFirstIssueOnly: boolean
+  goodFirstIssueOnly: boolean,
 ): IssueItem[] {
   let result = issues;
 

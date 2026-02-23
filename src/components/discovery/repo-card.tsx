@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
+
 import { ExternalLink, Star } from "lucide-react";
+
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
-import { cn } from "~/lib/utils";
 import type { DiscoveryResult, MatchedIssue } from "~/lib/discovery/constants";
+import { cn } from "~/lib/utils";
 
 const MAX_VISIBLE_TOPICS = 4;
 
@@ -15,8 +17,7 @@ const DIFFICULTY_STYLES: Record<MatchedIssue["difficulty"], string> = {
     "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
   intermediate:
     "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400",
-  advanced:
-    "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400",
+  advanced: "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400",
 };
 
 interface RepoCardProps {
@@ -36,13 +37,13 @@ export function RepoCard({ repo }: RepoCardProps) {
               href={`/repo/${repo.owner}/${repo.name}`}
               className="group inline-flex items-center gap-1.5"
             >
-              <span className="text-lg font-semibold text-foreground transition-colors group-hover:text-primary">
+              <span className="text-foreground group-hover:text-primary text-lg font-semibold transition-colors">
                 {repo.fullName}
               </span>
-              <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+              <ExternalLink className="text-muted-foreground h-4 w-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
             </Link>
             {repo.description && (
-              <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+              <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
                 {repo.description}
               </p>
             )}
@@ -50,11 +51,9 @@ export function RepoCard({ repo }: RepoCardProps) {
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <div className="inline-flex items-center gap-1 text-sm text-muted-foreground">
+          <div className="text-muted-foreground inline-flex items-center gap-1 text-sm">
             <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-            <span className="font-medium">
-              {formatStarCount(repo.stars)}
-            </span>
+            <span className="font-medium">{formatStarCount(repo.stars)}</span>
           </div>
 
           {repo.language && (
@@ -78,7 +77,7 @@ export function RepoCard({ repo }: RepoCardProps) {
             {remainingCount > 0 && (
               <Badge
                 variant="outline"
-                className="text-xs font-normal text-muted-foreground"
+                className="text-muted-foreground text-xs font-normal"
               >
                 +{remainingCount} more
               </Badge>
@@ -90,7 +89,7 @@ export function RepoCard({ repo }: RepoCardProps) {
       {repo.matchedIssues.length > 0 && (
         <CardContent className="pt-0">
           <Separator className="mb-4" />
-          <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <h4 className="text-muted-foreground mb-3 text-xs font-semibold tracking-wide uppercase">
             Matching Issues
           </h4>
           <div className="space-y-3">
@@ -106,7 +105,7 @@ export function RepoCard({ repo }: RepoCardProps) {
 
 function IssueRow({ issue }: { issue: MatchedIssue }) {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-3 sm:flex-row sm:items-start sm:justify-between">
+    <div className="border-border bg-muted/30 flex flex-col gap-2 rounded-lg border p-3 sm:flex-row sm:items-start sm:justify-between">
       <div className="min-w-0 flex-1">
         <a
           href={issue.url}
@@ -114,10 +113,10 @@ function IssueRow({ issue }: { issue: MatchedIssue }) {
           rel="noopener noreferrer"
           className="group inline-flex items-start gap-1.5"
         >
-          <span className="shrink-0 text-sm font-medium text-muted-foreground">
+          <span className="text-muted-foreground shrink-0 text-sm font-medium">
             #{issue.number}
           </span>
-          <span className="text-sm font-medium text-foreground transition-colors group-hover:text-primary">
+          <span className="text-foreground group-hover:text-primary text-sm font-medium transition-colors">
             {issue.title}
           </span>
         </a>
@@ -126,7 +125,7 @@ function IssueRow({ issue }: { issue: MatchedIssue }) {
             {issue.labels.map((label) => (
               <span
                 key={label}
-                className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+                className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 py-0.5 text-xs"
               >
                 {label}
               </span>
@@ -138,7 +137,7 @@ function IssueRow({ issue }: { issue: MatchedIssue }) {
         variant="outline"
         className={cn(
           "shrink-0 text-xs capitalize",
-          DIFFICULTY_STYLES[issue.difficulty]
+          DIFFICULTY_STYLES[issue.difficulty],
         )}
       >
         {issue.difficulty}

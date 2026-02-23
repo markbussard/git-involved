@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+
 import type { DiscoveryQuery, Interest } from "~/lib/query/types";
 
 const INTEREST_KEYWORDS: Record<Interest, string> = {
@@ -8,13 +9,11 @@ const INTEREST_KEYWORDS: Record<Interest, string> = {
     "mobile development, iOS, Android, React Native, Flutter",
   "ai-ml":
     "artificial intelligence, machine learning, deep learning, NLP, computer vision",
-  "game-development":
-    "game development, game engine, graphics, Unity, Unreal",
+  "game-development": "game development, game engine, graphics, Unity, Unreal",
   devops: "DevOps, CI/CD, containers, Kubernetes, Docker, infrastructure",
   security:
     "security, cryptography, authentication, vulnerability, penetration testing",
-  "data-science":
-    "data science, analytics, visualization, pandas, statistics",
+  "data-science": "data science, analytics, visualization, pandas, statistics",
   "embedded-systems":
     "embedded systems, IoT, firmware, hardware, microcontrollers",
 };
@@ -48,7 +47,9 @@ export function buildQueryText(query: DiscoveryQuery): string {
     parts.push(`Interests: ${interestDescriptions}.`);
   }
 
-  parts.push(`Experience level: ${EXPERIENCE_DESCRIPTIONS[query.experienceLevel]}.`);
+  parts.push(
+    `Experience level: ${EXPERIENCE_DESCRIPTIONS[query.experienceLevel]}.`,
+  );
 
   if (query.trendingTopics && query.trendingTopics.length > 0) {
     parts.push(`Trending topics: ${query.trendingTopics.join(", ")}.`);

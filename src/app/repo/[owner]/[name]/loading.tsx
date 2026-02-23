@@ -1,5 +1,5 @@
-import { Skeleton } from "~/components/ui/skeleton";
 import { Separator } from "~/components/ui/separator";
+import { Skeleton } from "~/components/ui/skeleton";
 
 export default function RepoDetailLoading() {
   return (
@@ -69,7 +69,7 @@ export default function RepoDetailLoading() {
           <Skeleton className="h-7 w-22 rounded-lg" />
         </div>
         {/* Issue rows skeleton */}
-        <div className="divide-y divide-border rounded-lg border border-border">
+        <div className="divide-border border-border divide-y rounded-lg border">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex flex-col gap-2 p-4">
               <div className="flex items-center gap-2">

@@ -25,18 +25,18 @@ export function StepIndicator({ totalSteps, currentStep }: StepIndicatorProps) {
               className={cn(
                 "h-2.5 w-2.5 rounded-full transition-all duration-300",
                 i === currentStep
-                  ? "scale-125 bg-primary"
+                  ? "bg-primary scale-125"
                   : i < currentStep
                     ? "bg-primary/60"
-                    : "bg-muted-foreground/25"
+                    : "bg-muted-foreground/25",
               )}
             />
             <span
               className={cn(
                 "hidden text-xs transition-colors duration-300 sm:block",
                 i === currentStep
-                  ? "font-medium text-foreground"
-                  : "text-muted-foreground"
+                  ? "text-foreground font-medium"
+                  : "text-muted-foreground",
               )}
             >
               {STEP_LABELS[i]}
@@ -46,7 +46,7 @@ export function StepIndicator({ totalSteps, currentStep }: StepIndicatorProps) {
             <div
               className={cn(
                 "mb-5 hidden h-[2px] w-8 transition-colors duration-300 sm:block",
-                i < currentStep ? "bg-primary/60" : "bg-muted-foreground/25"
+                i < currentStep ? "bg-primary/60" : "bg-muted-foreground/25",
               )}
             />
           )}

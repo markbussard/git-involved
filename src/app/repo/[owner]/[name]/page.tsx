@@ -1,20 +1,22 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
+import { notFound } from "next/navigation";
+
 import {
-  Star,
-  GitFork,
+  BookOpen,
   CircleDot,
-  Scale,
   Clock,
   ExternalLink,
-  BookOpen,
+  GitFork,
+  Scale,
+  Star,
 } from "lucide-react";
-import { db } from "~/lib/db";
+
+import { IssueList } from "~/components/repo/issue-list";
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
 import { Skeleton } from "~/components/ui/skeleton";
-import { IssueList } from "~/components/repo/issue-list";
+import { db } from "~/lib/db";
 import { formatDate } from "~/lib/utils/date";
 
 const ReadmeRenderer = dynamic(
@@ -29,7 +31,7 @@ const ReadmeRenderer = dynamic(
         <Skeleton className="h-4 w-4/6" />
       </div>
     ),
-  }
+  },
 );
 
 interface RepoPageProps {
@@ -71,14 +73,14 @@ export default async function RepoDetailPage({ params }: RepoPageProps) {
       <div className="space-y-4">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
               {repo.fullName}
             </h1>
             <a
               href={repo.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="text-muted-foreground hover:bg-muted hover:text-foreground inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm transition-colors"
               aria-label="View on GitHub"
             >
               <ExternalLink className="size-4" />
@@ -86,7 +88,7 @@ export default async function RepoDetailPage({ params }: RepoPageProps) {
             </a>
           </div>
           {repo.description ? (
-            <p className="text-base text-muted-foreground leading-relaxed">
+            <p className="text-muted-foreground text-base leading-relaxed">
               {repo.description}
             </p>
           ) : null}
@@ -94,23 +96,23 @@ export default async function RepoDetailPage({ params }: RepoPageProps) {
 
         {/* Stats row */}
         <div className="flex flex-wrap items-center gap-4 text-sm">
-          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+          <span className="text-muted-foreground inline-flex items-center gap-1.5">
             <Star className="size-4 fill-amber-400 text-amber-400" />
-            <span className="font-medium text-foreground">
+            <span className="text-foreground font-medium">
               {formatStarCount(repo.stars)}
             </span>
             stars
           </span>
-          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+          <span className="text-muted-foreground inline-flex items-center gap-1.5">
             <GitFork className="size-4" />
-            <span className="font-medium text-foreground">
+            <span className="text-foreground font-medium">
               {formatStarCount(repo.forks)}
             </span>
             forks
           </span>
-          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+          <span className="text-muted-foreground inline-flex items-center gap-1.5">
             <CircleDot className="size-4" />
-            <span className="font-medium text-foreground">
+            <span className="text-foreground font-medium">
               {repo.openIssuesCount}
             </span>
             open issues
@@ -123,7 +125,9 @@ export default async function RepoDetailPage({ params }: RepoPageProps) {
             {repo.languages.map((lang) => (
               <Badge
                 key={lang}
-                variant={lang === repo.primaryLanguage ? "default" : "secondary"}
+                variant={
+                  lang === repo.primaryLanguage ? "default" : "secondary"
+                }
                 className="text-xs"
               >
                 {lang}
@@ -133,7 +137,7 @@ export default async function RepoDetailPage({ params }: RepoPageProps) {
         ) : null}
 
         {/* Metadata row */}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex flex-wrap items-center gap-4 text-sm">
           {repo.license ? (
             <span className="inline-flex items-center gap-1.5">
               <Scale className="size-4" />
@@ -167,11 +171,11 @@ export default async function RepoDetailPage({ params }: RepoPageProps) {
         <>
           <Separator className="my-8" />
           <section>
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+            <h2 className="text-foreground mb-4 flex items-center gap-2 text-lg font-semibold">
               <BookOpen className="size-5" />
               README
             </h2>
-            <div className="rounded-lg border border-border bg-card p-6">
+            <div className="border-border bg-card rounded-lg border p-6">
               <Suspense
                 fallback={
                   <div className="space-y-3">
@@ -183,7 +187,10 @@ export default async function RepoDetailPage({ params }: RepoPageProps) {
                   </div>
                 }
               >
-                <ReadmeRenderer content={repo.readme} repoFullName={repo.fullName} />
+                <ReadmeRenderer
+                  content={repo.readme}
+                  repoFullName={repo.fullName}
+                />
               </Suspense>
             </div>
           </section>
@@ -193,21 +200,21 @@ export default async function RepoDetailPage({ params }: RepoPageProps) {
       {/* Issues */}
       <Separator className="my-8" />
       <section>
-        <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
+        <h2 className="text-foreground mb-4 flex items-center gap-2 text-lg font-semibold">
           <CircleDot className="size-5" />
           Open Issues
-          <span className="ml-1 text-sm font-normal text-muted-foreground">
+          <span className="text-muted-foreground ml-1 text-sm font-normal">
             ({repo.issues.length})
           </span>
         </h2>
         {repo.issues.length > 0 ? (
           <IssueList issues={issueData} />
         ) : (
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border py-12 text-center">
-            <p className="text-sm font-medium text-foreground">
+          <div className="border-border flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
+            <p className="text-foreground text-sm font-medium">
               No open issues
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="text-muted-foreground mt-1 text-sm">
               This repository has no open issues at the moment.
             </p>
           </div>

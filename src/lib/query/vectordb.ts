@@ -1,4 +1,5 @@
 import { Pinecone } from "@pinecone-database/pinecone";
+
 import type { Difficulty, RepoSize } from "~/generated/prisma/client";
 
 let pineconeClient: Pinecone | null = null;

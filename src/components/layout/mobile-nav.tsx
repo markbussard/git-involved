@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Menu, X, Github } from "lucide-react";
+
+import { Github, Menu, X } from "lucide-react";
+
 import { ThemeToggle } from "~/components/layout/theme-toggle";
 
 export function MobileNav() {
@@ -58,7 +60,7 @@ export function MobileNav() {
         ref={buttonRef}
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors focus-visible:ring-2 focus-visible:outline-none"
         aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
         aria-expanded={isOpen}
       >
@@ -68,7 +70,7 @@ export function MobileNav() {
       {isOpen ? (
         <div
           ref={navRef}
-          className="absolute left-0 right-0 top-full z-50 border-b border-border bg-background/95 backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-200"
+          className="border-border bg-background/95 animate-in fade-in slide-in-from-top-2 absolute top-full right-0 left-0 z-50 border-b backdrop-blur-md duration-200"
         >
           <nav className="flex flex-col gap-1 px-4 py-3">
             <Link
@@ -76,13 +78,13 @@ export function MobileNav() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={close}
-              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              className="text-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors"
             >
               <Github className="h-4 w-4" />
               GitHub
             </Link>
             <div className="flex items-center gap-2 px-3 py-2">
-              <span className="text-sm text-muted-foreground">Theme</span>
+              <span className="text-muted-foreground text-sm">Theme</span>
               <ThemeToggle />
             </div>
           </nav>

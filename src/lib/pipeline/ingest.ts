@@ -1,23 +1,26 @@
-import { db } from "~/lib/db";
 import { SyncStatus, SyncType } from "~/generated/prisma/client";
+import { db } from "~/lib/db";
 import {
-  fetchRepositories,
-  fetchRepoReadme,
   fetchRepoIssues,
   fetchRepoLanguages,
+  fetchRepoReadme,
+  fetchRepositories,
 } from "~/lib/github/client";
-import type { GitHubRepository, GitHubIssue } from "~/lib/github/client";
-import { transformRepository, transformIssue } from "~/lib/pipeline/transform";
+import type { GitHubIssue, GitHubRepository } from "~/lib/github/client";
 import {
-  generateEmbedding,
-  buildRepoEmbeddingText,
   buildIssueEmbeddingText,
+  buildRepoEmbeddingText,
+  generateEmbedding,
 } from "~/lib/pipeline/embeddings";
+import { transformIssue, transformRepository } from "~/lib/pipeline/transform";
 import {
-  upsertRepoEmbedding,
   upsertIssueEmbedding,
+  upsertRepoEmbedding,
 } from "~/lib/pipeline/vectordb";
-import type { RepoVectorMetadata, IssueVectorMetadata } from "~/lib/pipeline/vectordb";
+import type {
+  IssueVectorMetadata,
+  RepoVectorMetadata,
+} from "~/lib/pipeline/vectordb";
 
 // ---------------------------------------------------------------------------
 // Constants

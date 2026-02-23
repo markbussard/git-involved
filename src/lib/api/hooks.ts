@@ -1,5 +1,45 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { DiscoveryQuery, DiscoveryResult } from "~/lib/discovery/constants";
+import type {
+  DiscoveryResult as ApiDiscoveryResult,
+  RepoMatch,
+} from "~/lib/query/types";
+
+function mapRepoToResult(repo: RepoMatch): DiscoveryResult {
+  const [owner = "", name = ""] = repo.fullName.split("/");
+  return {
+    id: repo.id,
+    fullName: repo.fullName,
+    owner,
+    name,
+    description: repo.description ?? "",
+    stars: repo.stars,
+    language: repo.primaryLanguage ?? "",
+    topics: repo.topics,
+    matchedIssues: repo.matchedIssues.map((issue) => ({
+      number: issue.number,
+      title: issue.title,
+      url: issue.url,
+      difficulty: mapDifficulty(issue.difficulty),
+      labels: issue.labels,
+    })),
+  };
+}
+
+function mapDifficulty(
+  d: string | null,
+): "beginner" | "intermediate" | "advanced" {
+  switch (d) {
+    case "BEGINNER":
+      return "beginner";
+    case "INTERMEDIATE":
+      return "intermediate";
+    case "ADVANCED":
+      return "advanced";
+    default:
+      return "intermediate";
+  }
+}
 
 async function postDiscovery(query: DiscoveryQuery): Promise<DiscoveryResult[]> {
   const response = await fetch("/api/discover", {
@@ -12,7 +52,8 @@ async function postDiscovery(query: DiscoveryQuery): Promise<DiscoveryResult[]> 
     throw new Error(`Discovery request failed: ${response.statusText}`);
   }
 
-  return response.json();
+  const data: ApiDiscoveryResult = await response.json();
+  return data.repos.map(mapRepoToResult);
 }
 
 async function fetchRepo(id: string): Promise<DiscoveryResult> {

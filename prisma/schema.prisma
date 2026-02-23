@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Repository {
+  id              String   @id
+  name            String
+  fullName        String   @unique @map("full_name")
+  description     String?
+  url             String
+  stars           Int
+  forks           Int
+  openIssuesCount Int      @map("open_issues_count")
+  primaryLanguage String?  @map("primary_language")
+  languages       String[]
+  topics          String[]
+  license         String?
+  createdAt       DateTime @map("created_at")
+  updatedAt       DateTime @map("updated_at")
+  pushedAt        DateTime @map("pushed_at")
+
+  size        RepoSize
+  readme      String?
+  healthScore Float?   @map("health_score")
+
+  indexedAt          DateTime  @default(now()) @map("indexed_at")
+  embeddingId        String?   @map("embedding_id")
+  embeddingSyncedAt  DateTime? @map("embedding_synced_at")
+
+  issues Issue[]
+
+  @@index([primaryLanguage])
+  @@index([size])
+  @@index([stars])
+  @@index([indexedAt])
+  @@map("repositories")
+}
+
+model Issue {
+  id           String     @id
+  number       Int
+  title        String
+  body         String?
+  url          String
+  state        IssueState
+  labels       String[]
+  commentCount Int        @map("comment_count")
+  createdAt    DateTime   @map("created_at")
+  updatedAt    DateTime   @map("updated_at")
+
+  difficulty       Difficulty?
+  isGoodFirstIssue Boolean     @default(false) @map("is_good_first_issue")
+
+  indexedAt          DateTime  @default(now()) @map("indexed_at")
+  embeddingId        String?   @map("embedding_id")
+  embeddingSyncedAt  DateTime? @map("embedding_synced_at")
+
+  repoId     String     @map("repo_id")
+  repository Repository @relation(fields: [repoId], references: [id], onDelete: Cascade)
+
+  @@index([repoId])
+  @@index([state])
+  @@index([isGoodFirstIssue])
+  @@index([difficulty])
+  @@index([indexedAt])
+  @@map("issues")
+}
+
+model SyncLog {
+  id              String     @id @default(cuid())
+  type            SyncType
+  status          SyncStatus
+  startedAt       DateTime   @default(now()) @map("started_at")
+  completedAt     DateTime?  @map("completed_at")
+  reposProcessed  Int        @default(0) @map("repos_processed")
+  issuesProcessed Int        @default(0) @map("issues_processed")
+  errors          String[]
+
+  @@index([type, status])
+  @@index([startedAt])
+  @@map("sync_logs")
+}
+
+enum RepoSize {
+  SMALL
+  MEDIUM
+  LARGE
+  HUGE
+
+  @@map("repo_size")
+}
+
+enum IssueState {
+  OPEN
+  CLOSED
+
+  @@map("issue_state")
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+
+  @@map("difficulty")
+}
+
+enum SyncType {
+  FULL
+  INCREMENTAL
+  ISSUES_ONLY
+
+  @@map("sync_type")
+}
+
+enum SyncStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+
+  @@map("sync_status")
+}

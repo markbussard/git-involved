@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { runIngestionPipeline } from "~/lib/pipeline/ingest";
 
 async function main(): Promise<void> {

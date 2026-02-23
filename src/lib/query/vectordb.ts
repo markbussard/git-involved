@@ -31,6 +31,29 @@ export interface VectorSearchResult {
 }
 
 /**
+ * Map form language values (lowercase slug) to GitHub API language names
+ * which are stored in Pinecone metadata.
+ */
+const LANGUAGE_MAP: Record<string, string> = {
+  typescript: "TypeScript",
+  javascript: "JavaScript",
+  python: "Python",
+  go: "Go",
+  rust: "Rust",
+  java: "Java",
+  csharp: "C#",
+  cpp: "C++",
+  ruby: "Ruby",
+  php: "PHP",
+  swift: "Swift",
+  kotlin: "Kotlin",
+};
+
+function mapLanguagesToGitHub(languages: string[]): string[] {
+  return languages.map((lang) => LANGUAGE_MAP[lang] ?? lang);
+}
+
+/**
  * Search the repo embeddings index with optional metadata filters
  * on primaryLanguage and size.
  */
@@ -43,7 +66,7 @@ export async function searchRepos(
   const filter: Record<string, unknown> = {};
 
   if (params.languages && params.languages.length > 0) {
-    filter.primaryLanguage = { $in: params.languages };
+    filter.primaryLanguage = { $in: mapLanguagesToGitHub(params.languages) };
   }
 
   if (params.sizes && params.sizes.length > 0) {

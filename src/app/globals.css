@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,4 +120,22 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* GitHub-style bottom border on h1 and h2 in README prose */
+.prose h1,
+.prose h2 {
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Keep badge images inline within headings, paragraphs, and links */
+.prose h1 img,
+.prose h2 img,
+.prose h3 img,
+.prose p img,
+.prose a img {
+  display: inline;
+  margin: 0;
+  vertical-align: middle;
 }

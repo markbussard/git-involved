@@ -39,9 +39,9 @@ const CONFIGURED_LANGUAGES = [
 ] as const;
 
 const MIN_STARS = 100;
-const MAX_REPOS_PER_LANGUAGE = 500;
-const MAX_ISSUES_PER_REPO = 100;
-const REPOS_PER_PAGE = 100;
+const MAX_REPOS_PER_LANGUAGE = 25;
+const MAX_ISSUES_PER_REPO = 20;
+const REPOS_PER_PAGE = 25;
 
 // ---------------------------------------------------------------------------
 // Helpers

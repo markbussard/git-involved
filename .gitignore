@@ -46,6 +46,6 @@ next-env.d.ts
 src/generated/
 
 # claude code
-.claude/
-.agents/
+.claude/settings.local.json
+.claude/worktrees/
 skills-lock.json

@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: git_involved
       POSTGRES_DB: git_involved
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
